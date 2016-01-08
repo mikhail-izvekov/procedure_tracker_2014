@@ -1,0 +1,82 @@
+#export-to-excel:hover { cursor: pointer; }
+
+body  {
+	font: 80% Verdana, Arial, Helvetica, sans-serif;
+}
+
+.content{
+	margin-left: 40px;
+}
+
+.error{
+	color: red;
+}
+table { 
+	font: 100% Verdana, Arial, Helvetica, sans-serif;
+	color: #000;
+	text-align: left;
+	border-collapse: collapse;
+	border: 1px solid #666666;
+	border-top: none;	
+}
+#itsthetable table a {
+	text-decoration: underline;
+	color: blue;
+}
+#itsthetable table a:visited {
+	text-decoration: none;
+}
+#itsthetable tr.odd {
+	background-color: #ebf3ff;
+}
+#itsthetable tr a {
+	color: #000000;
+}
+#itsthetable tr:hover a {
+	color: #ffffff;
+}
+#itsthetable tr:hover, tr.odd:hover {
+	background-color: #3d80df;
+	color: #ffffff;
+}
+caption {
+	height: 45px;
+	line-height: 44px;
+	color: #60634E;
+	font-weight: bold;
+	text-align: center;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	margin-left: -1px;
+	background: #ffffff url(http://www.johnlawrence.net/itable/captop.jpg) repeat-x;
+	background-position: 50% top;
+	border-left: 2px solid #616161;
+	border-right: 2px solid #616161;
+}
+#itsthetable thead th {
+	font-size: 105%;
+	color: #000;
+	background: #ffffff url(http://www.johnlawrence.net/itable/tbar.gif) repeat-x;
+	height: 33px;
+}
+#itsthetable thead th:hover {
+	background: #ffffff url(http://www.johnlawrence.net/itable/tbov.gif) repeat-x;
+	
+}
+#itsthetable tr {
+	vertical-align: top;
+}
+#itsthetable tr,th,td {
+	padding: .75em;
+}
+#itsthetable td {
+	border-left: 1px solid #dadada;
+}
+#itsthetable tfoot tr {
+	background: #fff url(http://www.johnlawrence.net/itable/bbar.gif) repeat-x;
+}
+#itsthetable tfoot td, tfoot th{
+	color: #000;
+	border: 0px;
+}

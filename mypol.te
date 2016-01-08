@@ -1,0 +1,13 @@
+
+module mypol 1.0;
+
+require {
+	type httpd_t;
+	type mail_port_t;
+	type reserved_port_t;
+	class tcp_socket name_bind;
+}
+
+#============= httpd_t ==============
+allow httpd_t mail_port_t:tcp_socket name_bind;
+allow httpd_t reserved_port_t:tcp_socket name_bind;
