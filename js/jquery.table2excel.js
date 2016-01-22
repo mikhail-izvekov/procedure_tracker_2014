@@ -57,6 +57,7 @@
             var e = this, fullTemplate="", i, link, a;
 
             e.uri = "data:application/vnd.ms-excel;base64,";
+            e.settings.filename = name; // I added this line
             e.base64 = function (s) {
                 return window.btoa(unescape(encodeURIComponent(s)));
             };
@@ -98,7 +99,8 @@
             {
                 if (typeof Blob !== "undefined") {
                     //use blobs if we can
-                    fullTemplate = [fullTemplate];
+                    //fullTemplate = [fullTemplate]; -- original version
+                    fullTemplate = [e.format(fullTemplate, e.ctx)];
                     //convert to array
                     var blob1 = new Blob(fullTemplate, { type: "text/html" });
                     window.navigator.msSaveBlob(blob1, getFileName(e.settings) );
@@ -130,15 +132,15 @@
     };
 
     function getFileName(settings) {
-        return ( settings.filename ? settings.filename : "table2excel") + ".xlsx";
+        return ( settings.filename ? settings.filename : "table2excel") + ".xls";
     }
 
     $.fn[ pluginName ] = function ( options ) {
         var e = this;
             e.each(function() {
-                if ( !$.data( e, "plugin_" + pluginName ) ) {
+               // if ( !$.data( e, "plugin_" + pluginName ) ) {
                     $.data( e, "plugin_" + pluginName, new Plugin( this, options ) );
-                }
+               // }
             });
 
         // chain jQuery functions

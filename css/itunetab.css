@@ -54,6 +54,11 @@ caption {
 	border-left: 2px solid #616161;
 	border-right: 2px solid #616161;
 }
+.datasource {
+	font-weight: bold;
+	text-align: center;
+
+}
 #itsthetable thead th {
 	font-size: 105%;
 	color: #000;
@@ -80,3 +85,15 @@ caption {
 	color: #000;
 	border: 0px;
 }
+.excel_button{
+        float: right;
+        border: 0px;
+        text-align: center;
+        cursor: pointer;
+        line-height: 26px;
+        background: #D7DE36 url(../img/logo-excel-16X16.png) no-repeat 5px 5px;
+        display: block;
+        padding-left: 26px;
+        height: 26px;
+        color: #555;
+    }

@@ -145,7 +145,7 @@ echo '<thead><tr class="noExl"><th colspan="' .$colspan. '" align="right"><div i
 echo $table_header;
 
 
-$icd_counts = getISDDiagnosisCount($icd_code, $state_breakdown,  $city_breakdown, $inout_breakdown, $hospital_breakdown, $at_breakdown, $op_breakdown );
+$icd_counts = getICDDiagnosisCount($icd_code, $state_breakdown,  $city_breakdown, $inout_breakdown, $hospital_breakdown, $at_breakdown, $op_breakdown );
 
 $records_count = 0;
 $total_icd_count = 0;

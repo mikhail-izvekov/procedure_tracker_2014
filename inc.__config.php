@@ -14,8 +14,9 @@ ini_set('display_errors', 1);
 
 define("MYSQL_HOST", "192.168.1.101", true);
 define("MYSQL_DBNAME", "procedure_tracker_2014", true);
-define("MYSQL_USERNAME", "mikhaili", true);
-define("MYSQL_PASSWORD", "izvekov", true);
+define("INOUTCARR2013", "procedure_tracker_2013", true);
+define("MYSQL_USERNAME", "reimburse_dev", true);
+define("MYSQL_PASSWORD", "zxcvVCXZ11!!", true);
 
 
 

@@ -26,7 +26,7 @@ $npi = '';
 if (array_key_exists('npi', $_REQUEST)) $npi = $_REQUEST['npi'];
 
 $filter =  "<form method='post' action='provider_lookup.php'>";
-$filter .= "<h4>Enter NPI code</h4>";
+$filter .= "<h4>Enter NPI code ( ex: 1003017286 ... 1003803495 ) </h4>";
 $filter .= "<input type='text' name='npi' value=$npi >";
 $filter .= "<br><br><input type='submit' name='submit'  >";
 $filter .= "</form>";

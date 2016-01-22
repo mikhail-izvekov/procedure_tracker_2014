@@ -90,7 +90,7 @@ $filter .= "<br><input type='checkbox'   name='at_breakdown'       $at_checked  
 $filter .= "<br><input type='checkbox'   name='op_breakdown'       $op_checked       >&nbsp;By Operating Physician";
 $filter .= "<br><input type='checkbox'   name='inout_breakdown'    $inout_checked    >&nbsp;By IN/OUT Patient";
 $filter .= "<br><br><input type='submit' name='submit'  >";
-$filter .= "</form>";
+$filter .= "</form>\n\r";
 
 
 echo $filter;
@@ -102,7 +102,7 @@ if ( $icd_code == ''  or !is_numeric(preg_replace('/[,]/', '', $icd_code)))
 	die();
 }
 
-echo "<div id='itsthetable'><table>";
+echo '<div><table id="itsthetable">';
 
 $table_header = "<tr><th scope='col'>ICD Code</th>";
 if ($state_breakdown == 1) 
@@ -135,7 +135,7 @@ if ($inout_breakdown == 1)
 	$table_header .="<th scope='col'>IN-OUT Patient</th>";
 	$colspan += 1;
 }
-$table_header .="<th scope='col'>Procedure Count</th></tr></thead>";
+$table_header .="<th scope='col'>Procedure Count</th></tr></thead><tbody>";
 
 
 
@@ -143,9 +143,9 @@ $table_header .="<th scope='col'>Procedure Count</th></tr></thead>";
 //echo '<thead><tr><td colspan="' .$colspan. '" align="right"><button id="export-to-excel">Export to Excel</button></td></tr></thead>';
 echo '<thead><tr class="noExl"><th colspan="' .$colspan. '" align="right"><div id="export-to-excel"><img alt="" src="img/excel.png" width="32" height="32"></div></th></tr>';
 echo $table_header;
+echo "\n\r";
 
-
-$icd_counts = getISDProcedureCount($icd_code, $state_breakdown,  $city_breakdown, $inout_breakdown, $hospital_breakdown, $at_breakdown, $op_breakdown );
+$icd_counts = getICDProcedureCount($icd_code, $state_breakdown,  $city_breakdown, $inout_breakdown, $hospital_breakdown, $at_breakdown, $op_breakdown );
 
 $records_count = 0;
 $total_icd_count = 0;
@@ -163,6 +163,7 @@ foreach ($icd_counts as $icd_count)
 	if ($inout_breakdown == 1) $record .= '<td>'.$icd_count['inout'].'</td>';	
 	$record .= '<td>'.$icd_count['icd_count'].'</td></tr>';	
 	echo $record;
+	echo "\n\r";
 	
 	$records_count += 1;
 	$total_icd_count += $icd_count['icd_count'];
@@ -170,10 +171,7 @@ foreach ($icd_counts as $icd_count)
 	
 }
 
-echo "</tbody>";
-//if ($state_breakdown == 1 or $city_breakdown  == 1 )
-//echo "<tfoot><tr><th scope='row'>Total</th><td colspan='$colspan' align='right'>$total_icd_count </td></tr></tfoot><tbody>";
-echo "</table></div>";
+echo "</tbody></table></div>";
 
 
 if ($records_count > 1 )
@@ -181,17 +179,33 @@ echo "<br><br>Records:&nbsp;$records_count &nbsp;&nbsp;Total procedure count:&nb
 
 ?>
 
-	</table>
+	
 </div>
+
+
+<?php
+//<script>
+//$("#export-to-excel").click(function(){
+//$("#itsthetable").table2excel({
+ 
+//exclude: ".noExl",
+//   name: "ICD_Procedure_Stats"
+//});
+//});
+//</script>	
+?>
 <script>
-$("#export-to-excel").click(function(){
-$("#itsthetable").table2excel({
- // exclude CSS class
-exclude: ".noExl",
-   name: "ICD_Procedure_Stats"
-});
-});
-</script>	
+	$(function() {
+				$("#export-to-excel").click(function(){
+				$("#itsthetable").table2excel({
+					exclude: ".noExl",
+    				name: "ICD_Procedure_Stats"
+				}); 
+				 });
+			});
+</script>
+
+
 
 <?php
 //echo "<pre>";

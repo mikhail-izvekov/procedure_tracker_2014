@@ -101,15 +101,7 @@ if (!array_key_exists('submit', $_REQUEST)) die();
 // End of validation section
 
 //setCount(percent, columnIndex)
-$radiobutton = '<br>
-<input type="radio" name="percent" value="5" checked="checked" onClick="setCount(5,'.$colspan .')" /> 5% Database
-<br>
-<input type="radio" name="percent" value="100" onClick="setCount(20,'.$colspan .')"/> 100% Estimation
-<br>';
 
-echo $radiobutton;
-
-echo "<div id='itsthetable'><table id='code_count_table'>";
 $table_header = "<tr><th scope='col'>CPT Code</th>";
 if ($state_breakdown == 1) 
 {
@@ -136,6 +128,16 @@ if ($per_breakdown == 1)
 }
 
 
+$radiobutton = '<br>
+<input type="radio" name="percent" value="5" checked="checked" onClick="setCount(5,'.$colspan .')" /> 5% Database
+<br>
+<input type="radio" name="percent" value="100" onClick="setCount(20,'.$colspan .')"/> 100% Estimation
+<br>';
+
+echo $radiobutton;
+
+echo "<div id='itsthetable'><table id='code_count_table'>";
+
 
 echo '<thead><tr class="noExl"><th colspan="' .$colspan. '" align="right"><div id="export-to-excel"><img alt="" src="img/excel.png" width="32" height="32"></div></th></tr>';
 $table_header .="<th scope='col'>Procedure Count</th></tr></thead>";
@@ -143,8 +145,8 @@ $table_header .="<th scope='col'>Procedure Count</th></tr></thead>";
 
 echo $table_header;
 
-
-$cpt_counts = getCPTProcedureCount($cpt_code, $state_breakdown,  $city_breakdown, $pls_breakdown, $per_breakdown);
+$db = new PDO('mysql:host=' . MYSQL_HOST . ';dbname=' . MYSQL_DBNAME . ';charset=UTF8', MYSQL_USERNAME, MYSQL_PASSWORD);
+$cpt_counts = getCPTProcedureCount($db, $cpt_code, $state_breakdown,  $city_breakdown, $pls_breakdown, $per_breakdown);
 
 $records_count = 0;
 $total_cpt_count = 0;
@@ -177,6 +179,8 @@ echo "</table></div>";
 
 if ($records_count > 1)
 echo "<br><br>Records:&nbsp;$records_count &nbsp;&nbsp;Total procedure count:&nbsp;<span id='total_count'>$total_cpt_count</span>";
+
+
 
 ?>
 
