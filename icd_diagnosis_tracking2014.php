@@ -16,6 +16,7 @@ require_once("inc.__functions.php");
 require_once( "inc.__config.php" );
 
 $icd_code      = null;
+$icd_checked   = null;
 $state_checked = null;
 $city_checked  = null;
 $inout_checked = null;
@@ -23,6 +24,8 @@ $op_checked    = null;
 $at_checked    = null;
 $hospital_checked = null;
 
+
+$icd_breakdown  = 0;
 $city_breakdown  = 0;
 $state_breakdown = 0;
 $inout_breakdown = 0;
@@ -40,6 +43,11 @@ if (array_key_exists('icd_code', $_REQUEST))
 	
 }
 
+if (array_key_exists('icd_breakdown', $_REQUEST)) 
+{
+	$icd_checked = "checked='checked'";
+	$icd_breakdown = 1;
+}
 if (array_key_exists('state_breakdown', $_REQUEST)) 
 {
 	$state_checked = "checked='checked'";
@@ -81,9 +89,10 @@ echo "<h2>ICD Diagnosis Tracker 2014</h2>";
 
 $filter =  "<form method='post' action='icd_diagnosis_tracking2014.php'>";
 $filter .= "<h4>Enter ICD Diagnosis Code (ex: 00329)</h4>";
-$filter .= "<input type='text' name='icd_code' value=$icd_code >";
+$filter .= "<input type='text'  class='code-box' name='icd_code' value=$icd_code >";
 $filter .= "<h4>Breakdown diagnosis count</h4>";
-$filter .= "<input type='checkbox'       name='state_breakdown'    $state_checked    >&nbsp;By State";
+$filter .= "<input type='checkbox'       name='icd_breakdown'      $icd_checked      >&nbsp;By ICD Code";
+$filter .= "<br><input type='checkbox'   name='state_breakdown'    $state_checked    >&nbsp;By State";
 $filter .= "<br><input type='checkbox'   name='city_breakdown'     $city_checked     >&nbsp;By City";
 $filter .= "<br><input type='checkbox'   name='hospital_breakdown' $hospital_checked >&nbsp;By Hospital";
 $filter .= "<br><input type='checkbox'   name='at_breakdown'       $at_checked       >&nbsp;By Attending Physician";
@@ -104,7 +113,14 @@ if ( $icd_code == ''  or !is_numeric(preg_replace('/[,]/', '', $icd_code)))
 
 echo "<div id='itsthetable'><table>";
 
-$table_header = "<tr><th scope='col'>ICD Code</th>";
+$table_header = "<tr>";
+
+if ($icd_breakdown == 1) 
+{
+	$table_header .="<th scope='col'>ICD Code</th>";
+	$colspan += 1;
+}
+
 if ($state_breakdown == 1) 
 {
 	$table_header .="<th scope='col'>State</th>";
@@ -145,7 +161,7 @@ echo '<thead><tr class="noExl"><th colspan="' .$colspan. '" align="right"><div i
 echo $table_header;
 
 
-$icd_counts = getICDDiagnosisCount($icd_code, $state_breakdown,  $city_breakdown, $inout_breakdown, $hospital_breakdown, $at_breakdown, $op_breakdown );
+$icd_counts = getICDDiagnosisCount($icd_code, $icd_breakdown, $state_breakdown,  $city_breakdown, $inout_breakdown, $hospital_breakdown, $at_breakdown, $op_breakdown );
 
 $records_count = 0;
 $total_icd_count = 0;
@@ -154,7 +170,8 @@ $class = '';
 foreach ($icd_counts as $icd_count)
 {
 	$records_count % 2 == 0 ? $class = "class='odd'":  $class = ''; 
-	$record = "<tr $class><th scope='row'>".$icd_count['icd_code'].'</th>';
+	$record = "<tr $class>";
+	if ($icd_breakdown == 1) $record .= '<td>'.$icd_count['icd_code'].'</td>';
 	if ($state_breakdown == 1) $record .= '<td>'.$icd_count['state'].'</td>';
 	if ($city_breakdown == 1) $record  .= '<td>'.$icd_count['city'].'</td>';
 	if ($hospital_breakdown == 1) $record  .= '<td><a href="provider_lookup.php?npi='.$icd_count['hospital'].'">'.$icd_count['hospital'].'</a></td>'   ; 

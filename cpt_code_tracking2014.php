@@ -20,14 +20,15 @@ require_once("inc.__functions.php");
 require_once( "inc.__config.php" );
 
 $cpt_code      = null;
+$cpt_checked   = null;
 $state_checked = null;
 $city_checked  = null;
 $per_checked = null;
 $pls_checked = null;
 
 
-
-$city_breakdown = 0;
+$cpt_breakdown   = 0;
+$city_breakdown  = 0;
 $state_breakdown = 0;
 $per_breakdown = 0;
 $pls_breakdown = 0;
@@ -37,7 +38,7 @@ $pls_breakdown = 0;
 
 
 
-$colspan = 2;
+$colspan = 1;
 /******************PROCESS SUBMITTED FORM***********************/
 if (array_key_exists('cpt_code', $_REQUEST)) 
 {
@@ -47,6 +48,11 @@ if (array_key_exists('cpt_code', $_REQUEST))
 	
 }
 
+if (array_key_exists('cpt_breakdown', $_REQUEST)) 
+{
+	$cpt_checked = "checked='checked'";
+	$cpt_breakdown = 1;
+}
 if (array_key_exists('state_breakdown', $_REQUEST)) 
 {
 	$state_checked = "checked='checked'";
@@ -78,9 +84,10 @@ echo "<h2>CPT Procedure Tracker 2014</h2>";
 
 $filter =  "<form method='post' action='cpt_code_tracking2014.php'>";
 $filter .= "<h4>Enter CPT Procedure Code  (ex: 0001F,00004,00000... 00091)</h4>";
-$filter .= "<input type='text' name='cpt_code' value=$cpt_code >";
+$filter .= "<input type='text'  class='code-box'  name='cpt_code' value=$cpt_code >";
 $filter .= "<h4>Breakdown procedure count</h4>";
-$filter .= "<input type='checkbox'       name='state_breakdown'    $state_checked    >&nbsp;By State";
+$filter .= "<input type='checkbox'       name='cpt_breakdown'      $cpt_checked      >&nbsp;By CPT Code";
+$filter .= "<br><input type='checkbox'   name='state_breakdown'    $state_checked    >&nbsp;By State";
 $filter .= "<br><input type='checkbox'   name='city_breakdown'     $city_checked     >&nbsp;By City";
 $filter .= "<br><input type='checkbox'   name='pls_breakdown'      $pls_checked      >&nbsp;By Place of Service Code";
 $filter .= "<br><input type='checkbox'   name='per_breakdown'      $per_checked      >&nbsp;By Performing Physician";
@@ -102,7 +109,13 @@ if (!array_key_exists('submit', $_REQUEST)) die();
 
 //setCount(percent, columnIndex)
 
-$table_header = "<tr><th scope='col'>CPT Code</th>";
+$table_header = "<tr>";
+
+if ($cpt_breakdown == 1) 
+{
+	$table_header .="<th scope='col'>CPT Code</th>";
+	$colspan += 1;
+}
 if ($state_breakdown == 1) 
 {
 	$table_header .="<th scope='col'>State</th>";
@@ -146,7 +159,7 @@ $table_header .="<th scope='col'>Procedure Count</th></tr></thead>";
 echo $table_header;
 
 $db = new PDO('mysql:host=' . MYSQL_HOST . ';dbname=' . MYSQL_DBNAME . ';charset=UTF8', MYSQL_USERNAME, MYSQL_PASSWORD);
-$cpt_counts = getCPTProcedureCount($db, $cpt_code, $state_breakdown,  $city_breakdown, $pls_breakdown, $per_breakdown);
+$cpt_counts = getCPTProcedureCount($db, $cpt_code, $cpt_breakdown, $state_breakdown,  $city_breakdown, $pls_breakdown, $per_breakdown);
 
 $records_count = 0;
 $total_cpt_count = 0;
@@ -155,7 +168,8 @@ $class = '';
 foreach ($cpt_counts as $cpt_count)
 {
 	$records_count % 2 == 0 ? $class = "class='odd'":  $class = ''; 
-	$record = "<tr $class><th scope='row'>".$cpt_count['cpt_code'].'</th>';
+	$record = "<tr $class>";
+	if ($cpt_breakdown == 1) $record .= '<td>'.$cpt_count['cpt_code'].'</td>';
 	if ($state_breakdown == 1) $record .= '<td>'.$cpt_count['state'].'</td>';
 	if ($city_breakdown == 1) $record  .= '<td>'.$cpt_count['city'].'</td>';
 	if ($pls_breakdown == 1) $record .= '<td>'.$cpt_count['pls'].'</td>';	

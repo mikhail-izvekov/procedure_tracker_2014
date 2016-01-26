@@ -24,6 +24,7 @@ $op_checked    = null;
 $at_checked    = null;
 $hospital_checked = null;
 
+
 $icd_breakdown   = 0;
 $city_breakdown  = 0;
 $state_breakdown = 0;
@@ -32,7 +33,7 @@ $op_breakdown    = 0;
 $at_breakdown    = 0;
 $hospital_breakdown = 0;
 
-$colspan = 2;
+$colspan = 1;
 /******************PROCESS SUBMITTED FORM***********************/
 if (array_key_exists('icd_code', $_REQUEST)) 
 {
@@ -41,6 +42,7 @@ if (array_key_exists('icd_code', $_REQUEST))
 	$icd_code = preg_replace('/[.]/', '', $icd_code); 
 	
 }
+
 if (array_key_exists('icd_breakdown', $_REQUEST)) 
 {
 	$icd_checked = "checked='checked'";
@@ -81,14 +83,14 @@ if (array_key_exists('hospital_breakdown', $_REQUEST))
 	$hospital_breakdown = 1;
 }	
 
-echo "<h2>ICD Procedure Tracker 2014</h2>";
+echo "<h2>Outpatient ICD Diagnosis Tracker 2013</h2>";
 /******************END PROCESS SUBMITTED FORM***********************/
 
 
-$filter =  "<form method='post' action='icd_code_tracking2014.php'>";
-$filter .= "<h4>Enter ICD Procedure Code   (ex: 8152,8153,8154... 8164)</h4>";
-$filter .= "<input type='text'  class='code-box' name='icd_code' value=$icd_code >";
-$filter .= "<h4>Breakdown procedure count</h4>";
+$filter =  "<form method='post' action='icd_out_diagnosis_tracking2013.php'>";
+$filter .= "<h4>Enter ICD Diagnosis Code (ex: 00329)</h4>";
+$filter .= "<input  class='code-box' type='text' name='icd_code' value=$icd_code >";
+$filter .= "<h4>Breakdown diagnosis count</h4>";
 $filter .= "<input type='checkbox'       name='icd_breakdown'      $icd_checked      >&nbsp;By ICD Code";
 $filter .= "<br><input type='checkbox'   name='state_breakdown'    $state_checked    >&nbsp;By State";
 $filter .= "<br><input type='checkbox'   name='city_breakdown'     $city_checked     >&nbsp;By City";
@@ -97,7 +99,7 @@ $filter .= "<br><input type='checkbox'   name='at_breakdown'       $at_checked  
 $filter .= "<br><input type='checkbox'   name='op_breakdown'       $op_checked       >&nbsp;By Operating Physician";
 $filter .= "<br><input type='checkbox'   name='inout_breakdown'    $inout_checked    >&nbsp;By IN/OUT Patient";
 $filter .= "<br><br><input type='submit' name='submit'  >";
-$filter .= "</form>\n\r";
+$filter .= "</form>";
 
 
 echo $filter;
@@ -109,7 +111,7 @@ if ( $icd_code == ''  or !is_numeric(preg_replace('/[,]/', '', $icd_code)))
 	die();
 }
 
-echo '<div><table id="itsthetable">';
+
 
 $table_header = "<tr>";
 
@@ -148,17 +150,26 @@ if ($inout_breakdown == 1)
 	$table_header .="<th scope='col'>IN-OUT Patient</th>";
 	$colspan += 1;
 }
-$table_header .="<th scope='col'>Procedure Count</th></tr></thead><tbody>";
+$table_header .="<th scope='col'>Diagnosis Count</th></tr></thead>";
+
+$radiobutton = '<br>
+<input type="radio" name="percent" checked="checked" value="5"  onClick="setCount(5,'.$colspan .')" /> 5% Database
+<br>
+<input type="radio" name="percent" value="100" onClick="setCount(20,'.$colspan .')"/> 100% Estimation
+<br>';
+
+echo $radiobutton;
 
 
+echo "<div><table id='itsthetable'>";
 
 
 //echo '<thead><tr><td colspan="' .$colspan. '" align="right"><button id="export-to-excel">Export to Excel</button></td></tr></thead>';
 echo '<thead><tr class="noExl"><th colspan="' .$colspan. '" align="right"><div id="export-to-excel"><img alt="" src="img/excel.png" width="32" height="32"></div></th></tr>';
 echo $table_header;
-echo "\n\r";
 
-$icd_counts = getICDProcedureCount($icd_code, $icd_breakdown, $state_breakdown,  $city_breakdown, $inout_breakdown, $hospital_breakdown, $at_breakdown, $op_breakdown );
+$in_out = 'OUT';
+$icd_counts = getICDDiagnosis2013($icd_code, $icd_breakdown, $state_breakdown,  $city_breakdown, $inout_breakdown, $hospital_breakdown, $at_breakdown, $op_breakdown, $in_out );
 
 $records_count = 0;
 $total_icd_count = 0;
@@ -167,8 +178,8 @@ $class = '';
 foreach ($icd_counts as $icd_count)
 {
 	$records_count % 2 == 0 ? $class = "class='odd'":  $class = ''; 
-	$record = "<tr $class>";
-	if ($icd_breakdown == 1) $record .= '<td>'.$icd_count['icd_code'].'</td>';
+	$record = "<tr $class>"; 
+	if ($icd_breakdown == 1) $record   .= '<td>'.$icd_count['icd_code'].'</td>';
 	if ($state_breakdown == 1) $record .= '<td>'.$icd_count['state'].'</td>';
 	if ($city_breakdown == 1) $record  .= '<td>'.$icd_count['city'].'</td>';
 	if ($hospital_breakdown == 1) $record  .= '<td><a href="provider_lookup.php?npi='.$icd_count['hospital'].'">'.$icd_count['hospital'].'</a></td>'   ; 
@@ -177,7 +188,6 @@ foreach ($icd_counts as $icd_count)
 	if ($inout_breakdown == 1) $record .= '<td>'.$icd_count['inout'].'</td>';	
 	$record .= '<td>'.$icd_count['icd_count'].'</td></tr>';	
 	echo $record;
-	echo "\n\r";
 	
 	$records_count += 1;
 	$total_icd_count += $icd_count['icd_count'];
@@ -185,41 +195,59 @@ foreach ($icd_counts as $icd_count)
 	
 }
 
-echo "</tbody></table></div>";
+echo "</tbody>";
+//if ($state_breakdown == 1 or $city_breakdown  == 1 )
+//echo "<tfoot><tr><th scope='row'>Total</th><td colspan='$colspan' align='right'>$total_icd_count </td></tr></tfoot><tbody>";
+echo "</table></div>";
 
 
-if ($records_count > 1 )
-echo "<br><br>Records:&nbsp;$records_count &nbsp;&nbsp;Total procedure count:&nbsp;$total_icd_count";
+if ($records_count > 1)
+echo "<br><br>Records:&nbsp;$records_count &nbsp;&nbsp;Total diagnosis count:&nbsp;<span id='total_count'>$total_icd_count</span>";
 
 ?>
 
-	
+	</table>
 </div>
-
-
-<?php
-//<script>
-//$("#export-to-excel").click(function(){
-//$("#itsthetable").table2excel({
- 
-//exclude: ".noExl",
-//   name: "ICD_Procedure_Stats"
-//});
-//});
-//</script>	
-?>
 <script>
-	$(function() {
-				$("#export-to-excel").click(function(){
-				$("#itsthetable").table2excel({
-					exclude: ".noExl",
-    				name: "ICD_Procedure_Stats"
-				}); 
-				 });
-			});
-</script>
+$("#export-to-excel").click(function(){
+$("#itsthetable").table2excel({
+ // exclude CSS class
+exclude: ".noExl",
+   name: "ICD_Diagnosis_Stats"
+});
+});
+
+function setCount(percent, columnCount){
+var coefficient = 20;
+var columnIndex = parseInt(columnCount - 1);
+if ( percent == '5')  coefficient = 0.05;
 
 
+var theTbl = document.getElementById("itsthetable");
+var r=1;
+var oldvalue = 0;
+var total_count = 0;
+var new_value = 0;
+while(row=theTbl.rows[r++])
+{
+  if (document.getElementById("itsthetable").rows[r] === undefined) { break; }
+  
+  oldvalue = document.getElementById("itsthetable").rows[r].cells[columnIndex].firstChild.data;
+  new_value = parseInt(oldvalue) * coefficient;
+  total_count = total_count + new_value;
+  document.getElementById("itsthetable").rows[r].cells[columnIndex].firstChild.data = new_value;
+  
+  
+  //alert('Old value: ' + row.cells[columnIndex].firstChild.data);
+  //alert('New value: ' + parseInt(row.cells[columnIndex].firstChild.data) * coefficient);
+  
+ 
+}
+
+
+document.getElementById("total_count").innerHTML = total_count;
+}
+</script>	
 
 <?php
 //echo "<pre>";

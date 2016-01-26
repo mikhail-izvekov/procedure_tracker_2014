@@ -80,7 +80,7 @@ return 	$result;
      
  
  
-function getCPTDiagnosCount($db, $cpt_codes, $state_breakdown = 0,  $city_breakdown = 0, $place_type_breakdown = 0 , $per_breakdown = 0)
+function getCPTDiagnosCount($db, $cpt_codes, $cpt_breakdown = 0, $state_breakdown = 0,  $city_breakdown = 0, $place_type_breakdown = 0 , $per_breakdown = 0)
 {
   
 
@@ -101,14 +101,14 @@ function getCPTDiagnosCount($db, $cpt_codes, $state_breakdown = 0,  $city_breakd
     
 
 
-    
+    $cpt_column   = 'null';
     $state_column = 'null';
     $city_column  = 'null';
     $place_type_column = 'null';
     $hospital_column = 'null';
     $per_column = 'null';
    
-    
+    if ($cpt_breakdown == 1)        $cpt_column        = 'LINE_ICD_DGNS_CD';
     if ($state_breakdown == 1)      $state_column      = 'STATE';
     if ($city_breakdown  == 1)      $city_column       = 'CITY';
     if ($place_type_breakdown == 1) $place_type_column = 'PLCSRVC';
@@ -120,10 +120,10 @@ function getCPTDiagnosCount($db, $cpt_codes, $state_breakdown = 0,  $city_breakd
     
    
     
-		$sql_statement = "SELECT LINE_ICD_DGNS_CD, $state_column, $city_column, $place_type_column,  $per_column,  count(*)
+		$sql_statement = "SELECT $cpt_column, $state_column, $city_column, $place_type_column,  $per_column,  count(*)
 							FROM claim_cpt_codes
 						   WHERE LINE_ICD_DGNS_CD IN ($cpt_code)
-						GROUP BY LINE_ICD_DGNS_CD, $state_column, $city_column, $place_type_column,  $per_column";
+						GROUP BY 'Dummy', $cpt_column, $state_column, $city_column, $place_type_column,  $per_column";
 						
 						
 				
@@ -161,7 +161,7 @@ return 	$result;
 } 
      
      
-function getCPTProcedureCount($db, $cpt_codes, $state_breakdown = 0,  $city_breakdown = 0, $place_type_breakdown = 0 , $per_breakdown = 0)
+function getCPTProcedureCount($db, $cpt_codes, $cpt_breakdown, $state_breakdown = 0,  $city_breakdown = 0, $place_type_breakdown = 0 , $per_breakdown = 0)
 {
     
 
@@ -182,14 +182,14 @@ function getCPTProcedureCount($db, $cpt_codes, $state_breakdown = 0,  $city_brea
    }
     
     
-    
+    $cpt_column   = 'null';
     $state_column = 'null';
     $city_column  = 'null';
     $place_type_column = 'null';
     $hospital_column = 'null';
     $per_column = 'null';
    
-    
+    if ($cpt_breakdown   == 1)      $cpt_column        = 'HCPCS_CD';
     if ($state_breakdown == 1)      $state_column      = 'STATE';
     if ($city_breakdown  == 1)      $city_column       = 'CITY';
     if ($place_type_breakdown == 1) $place_type_column = 'PLCSRVC';
@@ -201,10 +201,10 @@ function getCPTProcedureCount($db, $cpt_codes, $state_breakdown = 0,  $city_brea
     
    
     
-		$sql_statement = "SELECT HCPCS_CD, $state_column, $city_column, $place_type_column,  $per_column,  count(*)
+		$sql_statement = "SELECT $cpt_column, $state_column, $city_column, $place_type_column,  $per_column,  count(*)
 							FROM claim_cpt_codes
 						   WHERE HCPCS_CD IN ($cpt_code)
-						GROUP BY HCPCS_CD, $state_column, $city_column, $place_type_column,  $per_column";
+						GROUP BY 'Dummy', $cpt_column, $state_column, $city_column, $place_type_column,  $per_column";
 						
 						
 				
@@ -241,7 +241,7 @@ return 	$result;
      
      
 
-function getICDProcedureCount($icd_codes, $state_breakdown = 0,  $city_breakdown = 0, $inout_breakdown = 0, $hospital_breakdown= 0, $at_breakdown = 0, $op_breakdown = 0)
+function getICDProcedureCount($icd_codes, $icd_breakdown, $state_breakdown = 0,  $city_breakdown = 0, $inout_breakdown = 0, $hospital_breakdown= 0, $at_breakdown = 0, $op_breakdown = 0)
 {
     $db = new PDO('mysql:host=' . MYSQL_HOST . ';dbname=' . MYSQL_DBNAME . ';charset=UTF8', MYSQL_USERNAME, MYSQL_PASSWORD);
 
@@ -262,7 +262,7 @@ function getICDProcedureCount($icd_codes, $state_breakdown = 0,  $city_breakdown
     
     
     
-    
+    $icd_column   = 'null';
     $state_column = 'null';
     $city_column  = 'null';
     $inout_column = 'null';
@@ -270,6 +270,7 @@ function getICDProcedureCount($icd_codes, $state_breakdown = 0,  $city_breakdown
     $at_column = 'null';
     $op_column = 'null';
     
+    if ($icd_breakdown   == 1) $icd_column   = 'icd_prcdr_cd';
     if ($state_breakdown == 1) $state_column = 'state';
     if ($city_breakdown  == 1) $city_column  = 'city';
     if ($inout_breakdown == 1) $inout_column = 'in_out_patient';
@@ -282,13 +283,13 @@ function getICDProcedureCount($icd_codes, $state_breakdown = 0,  $city_breakdown
     
    
     
-		$sql_statement = "SELECT icd_prcdr_cd, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column,  count(*)
+		$sql_statement = "SELECT $icd_column, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column,  count(*)
 							FROM claim_icd_codes
 						   WHERE icd_prcdr_cd IN ($icd_code)
-						GROUP BY icd_prcdr_cd, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column ";
+						GROUP BY 'Dummy', $icd_column, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column ";
 						
 						
-				
+		// echo $sql_statement;		
        
           
                 
@@ -325,7 +326,7 @@ return 	$result;
 }
 
 
-function getINICDProcedureCount2013($icd_codes, $state_breakdown = 0,  $city_breakdown = 0, $inout_breakdown = 0, $hospital_breakdown= 0, $at_breakdown = 0, $op_breakdown = 0)
+function getICDProcedureCount2013($icd_codes, $icd_breakdown, $state_breakdown = 0,  $city_breakdown = 0, $inout_breakdown = 0, $hospital_breakdown= 0, $at_breakdown = 0, $op_breakdown = 0, $in_out='IN')
 {
     $db = new PDO('mysql:host=' . MYSQL_HOST . ';dbname=' . INOUTCARR2013 . ';charset=UTF8', MYSQL_USERNAME, MYSQL_PASSWORD);
 
@@ -346,7 +347,7 @@ function getINICDProcedureCount2013($icd_codes, $state_breakdown = 0,  $city_bre
     
     
     
-    
+    $icd_column   = 'null';
     $state_column = 'null';
     $city_column  = 'null';
     $inout_column = 'null';
@@ -354,6 +355,7 @@ function getINICDProcedureCount2013($icd_codes, $state_breakdown = 0,  $city_bre
     $at_column = 'null';
     $op_column = 'null';
     
+    if ($icd_breakdown   == 1) $icd_column = 'icd_prcdr_cd';
     if ($state_breakdown == 1) $state_column = 'state';
     if ($city_breakdown  == 1) $city_column  = 'city';
     if ($inout_breakdown == 1) $inout_column = 'in_out_patient';
@@ -366,14 +368,14 @@ function getINICDProcedureCount2013($icd_codes, $state_breakdown = 0,  $city_bre
     
    
     
-		$sql_statement = "SELECT icd_prcdr_cd, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column,  count(*)
+		$sql_statement = "SELECT $icd_column, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column,  count(*)
 							FROM claim_icd_codes
 						   WHERE icd_prcdr_cd IN ($icd_code)
-						     AND in_out_patient = 'IN'
-						GROUP BY icd_prcdr_cd, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column ";
+						     AND in_out_patient = '$in_out'
+						GROUP BY 'dummy', $icd_column, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column ";
 						
 						
-				
+		//echo $sql_statement;		
        
           
                 
@@ -414,7 +416,7 @@ return 	$result;
 
 
 
-function getICDDiagnosisCount($icd_codes, $state_breakdown = 0,  $city_breakdown = 0, $inout_breakdown = 0, $hospital_breakdown= 0, $at_breakdown = 0, $op_breakdown = 0)
+function getICDDiagnosisCount($icd_codes, $icd_breakdown = 0, $state_breakdown = 0,  $city_breakdown = 0, $inout_breakdown = 0, $hospital_breakdown= 0, $at_breakdown = 0, $op_breakdown = 0)
 {
     $db = new PDO('mysql:host=' . MYSQL_HOST . ';dbname=' . MYSQL_DBNAME . ';charset=UTF8', MYSQL_USERNAME, MYSQL_PASSWORD);
 
@@ -433,7 +435,7 @@ function getICDDiagnosisCount($icd_codes, $state_breakdown = 0,  $city_breakdown
 	   
 	   
    }
-   
+    $icd_column   = 'null';
     $state_column = 'null';
     $city_column  = 'null';
     $inout_column = 'null';
@@ -441,6 +443,8 @@ function getICDDiagnosisCount($icd_codes, $state_breakdown = 0,  $city_breakdown
     $at_column = 'null';
     $op_column = 'null';
     
+    
+    if ($icd_breakdown   == 1) $icd_column   = 'icd_dgns_cd';
     if ($state_breakdown == 1) $state_column = 'state';
     if ($city_breakdown  == 1) $city_column  = 'city';
     if ($inout_breakdown == 1) $inout_column = 'in_out_patient';
@@ -448,10 +452,10 @@ function getICDDiagnosisCount($icd_codes, $state_breakdown = 0,  $city_breakdown
     if ($at_breakdown == 1) $at_column = 'at_npi';
     if ($op_breakdown == 1) $op_column = 'op_npi';
 
-		$sql_statement = "SELECT icd_dgns_cd, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column,  count(*)
+		$sql_statement = "SELECT $icd_column, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column,  count(*)
 							FROM claim_icd_dgns_codes
 						   WHERE icd_dgns_cd IN ($icd_code)
-						GROUP BY icd_dgns_cd, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column ";
+						GROUP BY 'Dummy', $icd_column, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column ";
 						
 
    	$count  = 1;
@@ -484,7 +488,7 @@ function getICDDiagnosisCount($icd_codes, $state_breakdown = 0,  $city_breakdown
 return 	$result;
 }
 
-function getIN_ICDDiagnosis2013($icd_codes, $state_breakdown = 0,  $city_breakdown = 0, $inout_breakdown = 0, $hospital_breakdown= 0, $at_breakdown = 0, $op_breakdown = 0)
+function getICDDiagnosis2013($icd_codes, $icd_breakdown, $state_breakdown = 0,  $city_breakdown = 0, $inout_breakdown = 0, $hospital_breakdown= 0, $at_breakdown = 0, $op_breakdown = 0, $in_out = 'IN')
 {
     $db = new PDO('mysql:host=' . MYSQL_HOST . ';dbname=' . INOUTCARR2013 . ';charset=UTF8', MYSQL_USERNAME, MYSQL_PASSWORD);
 
@@ -503,7 +507,7 @@ function getIN_ICDDiagnosis2013($icd_codes, $state_breakdown = 0,  $city_breakdo
 	   
 	   
    }
-   
+    $icd_column   = 'null'; 
     $state_column = 'null';
     $city_column  = 'null';
     $inout_column = 'null';
@@ -511,6 +515,8 @@ function getIN_ICDDiagnosis2013($icd_codes, $state_breakdown = 0,  $city_breakdo
     $at_column = 'null';
     $op_column = 'null';
     
+    
+    if ($icd_breakdown   == 1) $icd_column = 'icd_dgns_cd';
     if ($state_breakdown == 1) $state_column = 'state';
     if ($city_breakdown  == 1) $city_column  = 'city';
     if ($inout_breakdown == 1) $inout_column = 'in_out_patient';
@@ -518,11 +524,11 @@ function getIN_ICDDiagnosis2013($icd_codes, $state_breakdown = 0,  $city_breakdo
     if ($at_breakdown == 1) $at_column = 'at_npi';
     if ($op_breakdown == 1) $op_column = 'op_npi';
 
-		$sql_statement = "SELECT icd_dgns_cd, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column,  count(*)
+		$sql_statement = "SELECT $icd_column, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column,  count(*)
 							FROM claim_icd_dgns_codes
 						   WHERE icd_dgns_cd IN ($icd_code)
-						     AND in_out_patient = 'IN'
-						GROUP BY icd_dgns_cd, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column ";
+						     AND in_out_patient = '$in_out'
+						GROUP BY 'Dummy', $icd_column, $state_column, $city_column, $inout_column, $hospital_column, $at_column, $op_column ";
 						
 
    	$count  = 1;
@@ -554,8 +560,6 @@ function getIN_ICDDiagnosis2013($icd_codes, $state_breakdown = 0,  $city_breakdo
 	}
 return 	$result;
 }
-
-
 
 
 
