@@ -65,7 +65,7 @@ foreach ( $years as $yyyy )
 
 $filter =  "<form method='post' action='cpt_national_stats.php'>";
 $filter .= "<h4>Enter CPT Procedure Code  (ex:  0012F,00148,0015F... 0015F)</h4>";
-$filter .= "<input type='text' name='cpt_code' value=$cpt_code >";
+$filter .= "<input type='text' class='code-box' name='cpt_code' value=$cpt_code >";
 $filter .= "<h4>Breakdown procedure statistics</h4>";
 $filter .= "<input type='checkbox'       name='service_code_breakdown'    $service_code_checked    >&nbsp;By Place of Service Code";
 $filter .= "<h4>Choose the Year</h4>";

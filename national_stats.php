@@ -56,7 +56,7 @@ foreach ( $years as $yyyy )
 
 $filter =  "<form method='post' action='national_stats.php'>";
 $filter .= "<h4>Enter ICD Procedure Code  (ex: 8152-8155... 8152,8153,8154... 8164)</h4>";
-$filter .= "<input type='text' name='icd_code' value=$icd_code >";
+$filter .= "<input type='text' class='code-box' name='icd_code' value=$icd_code >";
 $filter .= "<h4>Choose the Year</h4>";
 $filter .= "<select name='year'>";
 $filter .= $options;
